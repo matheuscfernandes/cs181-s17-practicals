@@ -75,6 +75,7 @@ except ImportError:
     import xml.etree.ElementTree as ET
 import numpy as np
 from scipy import sparse
+import sklearn as sk
 
 import util
 
@@ -196,7 +197,7 @@ def first_last_system_call_feats(tree):
         # ignore everything outside the "all_section" element
         if el.tag == "all_section" and not in_all_section:
             in_all_section = True
-        elif el.tag == "all_section" and in_all_section:
+        elif el.tag != "all_section" and in_all_section:
             in_all_section = False
         elif in_all_section:
             if first:
