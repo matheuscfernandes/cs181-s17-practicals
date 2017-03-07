@@ -208,26 +208,6 @@ def first_last_system_call_feats(tree):
     c["last_call-"+last_call] = 1
     return c
 
-def system_call_count_feats(tree):
-    """
-    arguments:
-      tree is an xml.etree.ElementTree object
-    returns:
-      a dictionary mapping 'num_system_calls' to the number of system_calls
-      made by an executable (summed over all processes)
-    """
-    c = Counter()
-    in_all_section = False
-    for el in tree.iter():
-        # ignore everything outside the "all_section" element
-        if el.tag == "all_section" and not in_all_section:
-            in_all_section = True
-        elif el.tag == "all_section" and in_all_section:
-            in_all_section = False
-        elif in_all_section:
-            c['num_system_calls'] += 1
-    return c
-
 def feat_counts(tree):
     """
     arguments:
@@ -245,6 +225,7 @@ def feat_counts(tree):
         elif el.tag == "all_section" and in_all_section:
             in_all_section = False
         elif in_all_section:
+            c['num_system_calls'] += 1
             if el.tag=="load_image":
                 c['load_image'] += 1
             elif el.tag=="create_open_file":
