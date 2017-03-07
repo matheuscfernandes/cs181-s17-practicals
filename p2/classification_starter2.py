@@ -244,88 +244,89 @@ def diff_feat_count(tree):
             in_all_section = True
         elif el.tag == "all_section" and in_all_section:
             in_all_section = False
-        elif in_all_section and el.tag=="load_image":
-            c['load_image'] += 1
-        elif in_all_section and el.tag=="create_open_file":
-            c['create_open_file'] += 1
-        elif in_all_section and el.tag=="open_file":
-            c['open_file'] += 1
-        elif in_all_section and el.tag=="vm_write":
-            c['vm_write'] += 1
-        elif in_all_section and el.tag=="vm_allocate":
-            c['vm_allocate'] += 1
-        elif in_all_section and el.tag=="vm_protect":
-            c['vm_protect'] += 1
-        elif in_all_section and el.tag=="kill_process":
-            c['kill_process'] += 1
-        elif in_all_section and el.tag=="load_dll":
-            c['load_dll'] += 1
-        elif in_all_section and el.tag=="create_mutex":
-            c['create_mutex'] += 1
-        elif in_all_section and el.tag=="set_windows_hook":
-            c['set_windows_hook'] += 1
-        elif in_all_section and el.tag=="check_for_debugger":
-            c['check_for_debugger'] += 1
-        elif in_all_section and el.tag=="create_file":
-            c['create_file'] += 1
-        elif in_all_section and el.tag=="set_file_time":
-            c['set_file_time'] += 1
-        elif in_all_section and el.tag=="create_window":
-            c['create_window'] += 1
-        elif in_all_section and el.tag=="destroy_window":
-            c['destroy_window'] += 1
-        elif in_all_section and el.tag=="enum_window":
-            c['enum_window'] += 1
-        elif in_all_section and el.tag=="create_process":
-            c['create_process'] += 1
-        elif in_all_section and el.tag=="open_key":
-            c['open_key'] += 1
-        elif in_all_section and el.tag=="query_value":
-            c['query_value'] += 1
-        elif in_all_section and el.tag=="get_system_directory":
-            c['create_window'] += 1
-        elif in_all_section and el.tag=="find_window":
-            c['find_window'] += 1
-        elif in_all_section and el.tag=="show_window":
-            c['show_window'] += 1
-        elif in_all_section and el.tag=="get_file_attributes":
-            c['get_file_attributes'] += 1
-        elif in_all_section and el.tag=="com_create_instance":
-            c['com_create_instance'] += 1
-        elif in_all_section and el.tag=="get_username":
-            c['get_username'] += 1
-        elif in_all_section and el.tag=="set_file_attributes":
-            c['set_file_attributes'] += 1
-        elif in_all_section and el.tag=="copy_file":
-            c['copy_file'] += 1
-        elif in_all_section and el.tag=="delete_file":
-            c['delete_file'] += 1
-        elif in_all_section and el.tag=="open_process":
-            c['open_process'] += 1
-        elif in_all_section and el.tag=="create_thread_remote":
-            c['create_thread_remote'] += 1
-        elif in_all_section and el.tag=="sleep":
-            c['sleep'] += 1
-        elif in_all_section and el.tag=="open_mutex":
-            c['open_mutex'] += 1
-        elif in_all_section and el.tag=="get_computer_name":
-            c['get_computer_name'] += 1
-        elif in_all_section and el.tag=="open_scmanager":
-            c['open_scmanager'] += 1
-        elif in_all_section and el.tag=="create_thread":
-            c['create_thread'] += 1
-        elif in_all_section and el.tag=="get_host_by_name":
-            c['get_host_by_name'] += 1
-        elif in_all_section and el.tag=="connect":
-            c['connect'] += 1
-        elif in_all_section and el.tag=="create_thread_remote":
-            c['create_thread_remote'] += 1
-        elif in_all_section and el.tag=="create_socket":
-            c['create_socket'] += 1
-        elif in_all_section and el.tag=="open_url":
-            c['open_url'] += 1
-        elif in_all_section and el.tag=="enum_processes":
-            c['enum_processes'] += 1
+        elif in_all_section:
+            if el.tag=="load_image":
+                c['load_image'] += 1
+            elif el.tag=="create_open_file":
+                c['create_open_file'] += 1
+            elif el.tag=="open_file":
+                c['open_file'] += 1
+            elif el.tag=="vm_write":
+                c['vm_write'] += 1
+            elif el.tag=="vm_allocate":
+                c['vm_allocate'] += 1
+            elif el.tag=="vm_protect":
+                c['vm_protect'] += 1
+            elif el.tag=="kill_process":
+                c['kill_process'] += 1
+            elif el.tag=="load_dll":
+                c['load_dll'] += 1
+            elif el.tag=="create_mutex":
+                c['create_mutex'] += 1
+            elif el.tag=="set_windows_hook":
+                c['set_windows_hook'] += 1
+            elif el.tag=="check_for_debugger":
+                c['check_for_debugger'] += 1
+            elif el.tag=="create_file":
+                c['create_file'] += 1
+            elif el.tag=="set_file_time":
+                c['set_file_time'] += 1
+            elif el.tag=="create_window":
+                c['create_window'] += 1
+            elif el.tag=="destroy_window":
+                c['destroy_window'] += 1
+            elif el.tag=="enum_window":
+                c['enum_window'] += 1
+            elif el.tag=="create_process":
+                c['create_process'] += 1
+            elif el.tag=="open_key":
+                c['open_key'] += 1
+            elif el.tag=="query_value":
+                c['query_value'] += 1
+            elif el.tag=="get_system_directory":
+                c['create_window'] += 1
+            elif el.tag=="find_window":
+                c['find_window'] += 1
+            elif el.tag=="show_window":
+                c['show_window'] += 1
+            elif el.tag=="get_file_attributes":
+                c['get_file_attributes'] += 1
+            elif el.tag=="com_create_instance":
+                c['com_create_instance'] += 1
+            elif el.tag=="get_username":
+                c['get_username'] += 1
+            elif el.tag=="set_file_attributes":
+                c['set_file_attributes'] += 1
+            elif el.tag=="copy_file":
+                c['copy_file'] += 1
+            elif el.tag=="delete_file":
+                c['delete_file'] += 1
+            elif el.tag=="open_process":
+                c['open_process'] += 1
+            elif el.tag=="create_thread_remote":
+                c['create_thread_remote'] += 1
+            elif el.tag=="sleep":
+                c['sleep'] += 1
+            elif el.tag=="open_mutex":
+                c['open_mutex'] += 1
+            elif el.tag=="get_computer_name":
+                c['get_computer_name'] += 1
+            elif el.tag=="open_scmanager":
+                c['open_scmanager'] += 1
+            elif el.tag=="create_thread":
+                c['create_thread'] += 1
+            elif el.tag=="get_host_by_name":
+                c['get_host_by_name'] += 1
+            elif el.tag=="connect":
+                c['connect'] += 1
+            elif el.tag=="create_thread_remote":
+                c['create_thread_remote'] += 1
+            elif el.tag=="create_socket":
+                c['create_socket'] += 1
+            elif el.tag=="open_url":
+                c['open_url'] += 1
+            elif el.tag=="enum_processes":
+                c['enum_processes'] += 1
     return c
 
 
