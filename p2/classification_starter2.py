@@ -475,7 +475,9 @@ def main():
     outputfile = "mypredictions.csv"  # feel free to change this or take it as an argument
     
     # TODO put the names of the feature functions you've defined above in this list
-    ffs = [first_last_system_call_feats, system_call_count_feats]
+    ffs = [first_last_system_call_feats, system_call_count_feats, load_image, create_open_file,
+            open_file, vm_write, vm_allocate, vm_protect, kill_process, load_dll, create_mutex, 
+            set_windows_hook, check_for_debugger, create_window]
     
     # extract features
     print "extracting training features..."
