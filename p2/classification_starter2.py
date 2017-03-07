@@ -229,6 +229,36 @@ def all_feats(tree):
             c[el.tag] += 1
     return c
 
+def dll_subinfo(tree):
+    """
+    arguments:
+      tree is an xml.etree.ElementTree object
+    returns:
+      a dictionary mapping 'num_system_calls' to the number of system_calls
+      made by an executable (summed over all processes)
+    """
+    c = Counter()
+    in_all_section = False
+    ccc=0
+    for el in tree.iter():
+        # ccc=+1
+        # if ccc==1:
+        #     print el.attrib  
+        # ignore everything outside the "all_section" element
+        if el.tag == "all_section" and not in_all_section:
+            in_all_section = True
+        elif el.tag == "all_section" and in_all_section:
+            in_all_section = False
+        elif in_all_section:
+            c['num_system_calls'] += 1
+            if el.tag=="load_dll":
+                c['load_dll'] += 1
+                for att in el.attrib:
+                    c['load_dll'+att+el.attrib[att]]+=1
+            else:
+                c[el.tag] += 1
+    return c
+
 def feat_counts(tree):
     """
     arguments:
