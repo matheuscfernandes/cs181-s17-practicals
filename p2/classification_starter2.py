@@ -257,7 +257,7 @@ def level_2(tree):
     return c
 
 def level_3(tree):
-    #all features + [load_dll+ ] attributes
+    #all features + 6 attributes
     """
     arguments:
       tree is an xml.etree.ElementTree object
@@ -267,6 +267,34 @@ def level_3(tree):
     """
     subFeatureTags={"load_dll":1,"vm_protect":5,"vm_write":5,"load_image":100,
         "load_driver":100,"unload_driver":100}
+    c = Counter()
+    in_all_section = False
+    for el in tree.iter():
+        if el.tag == "all_section" and not in_all_section:
+            in_all_section = True
+        elif el.tag == "all_section" and in_all_section:
+            in_all_section = False
+        elif in_all_section:
+            c['num_system_calls'] += 1
+            c[el.tag] += 1
+            if el.tag in subFeatureTags:
+                for att in el.attrib:
+                    c[el.tag+att+el.attrib[att]]+=subFeatureTags[el.tag]        
+    return c
+
+def level_4(tree):
+    #all features + 14 attributes
+    """
+    arguments:
+      tree is an xml.etree.ElementTree object
+    returns:
+      a dictionary mapping 'num_system_calls' to the number of system_calls
+      made by an executable (summed over all processes)
+    """
+    subFeatureTags={"load_dll":1,"vm_protect":5,"vm_write":5,"load_image":1000,
+        "load_driver":1000,"unload_driver":1000,"download_file":10000,"download_file_to_cache":1000,
+        "copy_file":1000,"kill_process":1000,"destroy_window":100,"move_file":10000,"start_service":1000,
+        "message":100000}
     c = Counter()
     in_all_section = False
     for el in tree.iter():
