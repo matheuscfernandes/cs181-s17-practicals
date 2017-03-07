@@ -208,6 +208,27 @@ def first_last_system_call_feats(tree):
     c["last_call-"+last_call] = 1
     return c
 
+def all_feats(tree):
+    """
+    arguments:
+      tree is an xml.etree.ElementTree object
+    returns:
+      a dictionary mapping 'num_system_calls' to the number of system_calls
+      made by an executable (summed over all processes)
+    """
+    c = Counter()
+    in_all_section = False
+    for el in tree.iter():
+        # ignore everything outside the "all_section" element
+        if el.tag == "all_section" and not in_all_section:
+            in_all_section = True
+        elif el.tag == "all_section" and in_all_section:
+            in_all_section = False
+        elif in_all_section:
+            c['num_system_calls'] += 1
+            c[el.tag] += 1
+    return c
+
 def feat_counts(tree):
     """
     arguments:
@@ -318,7 +339,7 @@ def main():
     outputfile = "mypredictions.csv"  # feel free to change this or take it as an argument
     
     # TODO put the names of the feature functions you've defined above in this list
-    ffs = [first_last_system_call_feats, feat_counts]
+    ffs = [first_last_system_call_feats, all_feats]
     
     # extract features
     print "extracting training features..."
