@@ -228,7 +228,7 @@ def system_call_count_feats(tree):
             c['num_system_calls'] += 1
     return c
 
-def diff_feat_count(tree):
+def feat_counts(tree):
     """
     arguments:
       tree is an xml.etree.ElementTree object
@@ -337,7 +337,7 @@ def main():
     outputfile = "mypredictions.csv"  # feel free to change this or take it as an argument
     
     # TODO put the names of the feature functions you've defined above in this list
-    ffs = [first_last_system_call_feats, diff_feat_count]
+    ffs = [first_last_system_call_feats, feat_counts]
     
     # extract features
     print "extracting training features..."
