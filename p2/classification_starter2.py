@@ -420,7 +420,7 @@ def main():
     outputfile = "mypredictions.csv"  # feel free to change this or take it as an argument
     
     # TODO put the names of the feature functions you've defined above in this list
-    ffs = [first_last_system_call_feats, all_feats]
+    ffs = [first_last_system_call_feats, level_4]
     
     # extract features
     print "extracting training features..."
