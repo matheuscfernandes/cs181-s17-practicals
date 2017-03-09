@@ -208,7 +208,8 @@ def first_last_system_call_feats(tree):
     c["last_call-"+last_call] = 1
     return c
 
-def system_call_count_feats(tree):
+def level_1(tree):
+    #all tags
     """
     arguments:
       tree is an xml.etree.ElementTree object
@@ -226,9 +227,90 @@ def system_call_count_feats(tree):
             in_all_section = False
         elif in_all_section:
             c['num_system_calls'] += 1
+            c[el.tag] += 1
     return c
 
-def load_image(tree):
+def level_2(tree):
+    #all tags + load_dll attributes
+    """
+    arguments:
+      tree is an xml.etree.ElementTree object
+    returns:
+      a dictionary mapping 'num_system_calls' to the number of system_calls
+      made by an executable (summed over all processes)
+    """
+    c = Counter()
+    in_all_section = False
+    for el in tree.iter():
+        if el.tag == "all_section" and not in_all_section:
+            in_all_section = True
+        elif el.tag == "all_section" and in_all_section:
+            in_all_section = False
+        elif in_all_section:
+            c['num_system_calls'] += 1
+            if el.tag=="load_dll":
+                c['load_dll'] += 1
+                for att in el.attrib:
+                    c['load_dll'+att+el.attrib[att]]+=1
+            else:
+                c[el.tag] += 1
+    return c
+
+def level_3(tree):
+    #all features + 6 attributes
+    """
+    arguments:
+      tree is an xml.etree.ElementTree object
+    returns:
+      a dictionary mapping 'num_system_calls' to the number of system_calls
+      made by an executable (summed over all processes)
+    """
+    subFeatureTags={"load_dll":1,"vm_protect":5,"vm_write":5,"load_image":100,
+        "load_driver":100,"unload_driver":100}
+    c = Counter()
+    in_all_section = False
+    for el in tree.iter():
+        if el.tag == "all_section" and not in_all_section:
+            in_all_section = True
+        elif el.tag == "all_section" and in_all_section:
+            in_all_section = False
+        elif in_all_section:
+            c['num_system_calls'] += 1
+            c[el.tag] += 1
+            if el.tag in subFeatureTags:
+                for att in el.attrib:
+                    c[el.tag+att+el.attrib[att]]+=subFeatureTags[el.tag]        
+    return c
+
+def level_4(tree):
+    #all features + 14 attributes
+    """
+    arguments:
+      tree is an xml.etree.ElementTree object
+    returns:
+      a dictionary mapping 'num_system_calls' to the number of system_calls
+      made by an executable (summed over all processes)
+    """
+    subFeatureTags={"load_dll":1,"vm_protect":5,"vm_write":5,"load_image":1000,
+        "load_driver":1000,"unload_driver":1000,"download_file":10000,"download_file_to_cache":1000,
+        "copy_file":1000,"kill_process":1000,"destroy_window":100,"move_file":10000,"start_service":1000,
+        "message":100000}
+    c = Counter()
+    in_all_section = False
+    for el in tree.iter():
+        if el.tag == "all_section" and not in_all_section:
+            in_all_section = True
+        elif el.tag == "all_section" and in_all_section:
+            in_all_section = False
+        elif in_all_section:
+            c['num_system_calls'] += 1
+            c[el.tag] += 1
+            if el.tag in subFeatureTags:
+                for att in el.attrib:
+                    c[el.tag+att+el.attrib[att]]+=subFeatureTags[el.tag]        
+    return c
+
+def feat_counts(tree):
     """
     arguments:
       tree is an xml.etree.ElementTree object
@@ -244,229 +326,92 @@ def load_image(tree):
             in_all_section = True
         elif el.tag == "all_section" and in_all_section:
             in_all_section = False
-        elif in_all_section and el.tag=="load_image":
-            c['load_image'] += 1
+        elif in_all_section:
+            c['num_system_calls'] += 1
+            if el.tag=="load_image":
+                c['load_image'] += 1
+            elif el.tag=="create_open_file":
+                c['create_open_file'] += 1
+            elif el.tag=="open_file":
+                c['open_file'] += 1
+            elif el.tag=="vm_write":
+                c['vm_write'] += 1
+            elif el.tag=="vm_allocate":
+                c['vm_allocate'] += 1
+            elif el.tag=="vm_protect":
+                c['vm_protect'] += 1
+            elif el.tag=="kill_process":
+                c['kill_process'] += 1
+            elif el.tag=="load_dll":
+                c['load_dll'] += 1
+            elif el.tag=="create_mutex":
+                c['create_mutex'] += 1
+            elif el.tag=="set_windows_hook":
+                c['set_windows_hook'] += 1
+            elif el.tag=="check_for_debugger":
+                c['check_for_debugger'] += 1
+            elif el.tag=="create_file":
+                c['create_file'] += 1
+            elif el.tag=="set_file_time":
+                c['set_file_time'] += 1
+            elif el.tag=="create_window":
+                c['create_window'] += 1
+            elif el.tag=="destroy_window":
+                c['destroy_window'] += 1
+            elif el.tag=="enum_window":
+                c['enum_window'] += 1
+            elif el.tag=="create_process":
+                c['create_process'] += 1
+            elif el.tag=="open_key":
+                c['open_key'] += 1
+            elif el.tag=="query_value":
+                c['query_value'] += 1
+            elif el.tag=="get_system_directory":
+                c['create_window'] += 1
+            elif el.tag=="find_window":
+                c['find_window'] += 1
+            elif el.tag=="show_window":
+                c['show_window'] += 1
+            elif el.tag=="get_file_attributes":
+                c['get_file_attributes'] += 1
+            elif el.tag=="com_create_instance":
+                c['com_create_instance'] += 1
+            elif el.tag=="get_username":
+                c['get_username'] += 1
+            elif el.tag=="set_file_attributes":
+                c['set_file_attributes'] += 1
+            elif el.tag=="copy_file":
+                c['copy_file'] += 1
+            elif el.tag=="delete_file":
+                c['delete_file'] += 1
+            elif el.tag=="open_process":
+                c['open_process'] += 1
+            elif el.tag=="create_thread_remote":
+                c['create_thread_remote'] += 1
+            elif el.tag=="sleep":
+                c['sleep'] += 1
+            elif el.tag=="open_mutex":
+                c['open_mutex'] += 1
+            elif el.tag=="get_computer_name":
+                c['get_computer_name'] += 1
+            elif el.tag=="open_scmanager":
+                c['open_scmanager'] += 1
+            elif el.tag=="create_thread":
+                c['create_thread'] += 1
+            elif el.tag=="get_host_by_name":
+                c['get_host_by_name'] += 1
+            elif el.tag=="connect":
+                c['connect'] += 1
+            elif el.tag=="create_thread_remote":
+                c['create_thread_remote'] += 1
+            elif el.tag=="create_socket":
+                c['create_socket'] += 1
+            elif el.tag=="open_url":
+                c['open_url'] += 1
+            elif el.tag=="enum_processes":
+                c['enum_processes'] += 1
     return c
 
-def create_open_file(tree):
-    """
-    arguments:
-      tree is an xml.etree.ElementTree object
-    returns:
-      a dictionary mapping 'num_system_calls' to the number of system_calls
-      made by an executable (summed over all processes)
-    """
-    c = Counter()
-    in_all_section = False
-    for el in tree.iter():
-        # ignore everything outside the "all_section" element
-        if el.tag == "all_section" and not in_all_section:
-            in_all_section = True
-        elif el.tag == "all_section" and in_all_section:
-            in_all_section = False
-        elif in_all_section and el.tag=="create_open_file":
-            c['create_open_file'] += 1
-    return c
-
-def open_file(tree):
-    """
-    arguments:
-      tree is an xml.etree.ElementTree object
-    returns:
-      a dictionary mapping 'num_system_calls' to the number of system_calls
-      made by an executable (summed over all processes)
-    """
-    c = Counter()
-    in_all_section = False
-    for el in tree.iter():
-        # ignore everything outside the "all_section" element
-        if el.tag == "all_section" and not in_all_section:
-            in_all_section = True
-        elif el.tag == "all_section" and in_all_section:
-            in_all_section = False
-        elif in_all_section and el.tag=="open_file":
-            c['open_file'] += 1
-    return c
-
-def vm_write(tree):
-    """
-    arguments:
-      tree is an xml.etree.ElementTree object
-    returns:
-      a dictionary mapping 'num_system_calls' to the number of system_calls
-      made by an executable (summed over all processes)
-    """
-    c = Counter()
-    in_all_section = False
-    for el in tree.iter():
-        # ignore everything outside the "all_section" element
-        if el.tag == "all_section" and not in_all_section:
-            in_all_section = True
-        elif el.tag == "all_section" and in_all_section:
-            in_all_section = False
-        elif in_all_section and el.tag=="vm_write":
-            c['vm_write'] += 1
-    return c
-
-def vm_allocate(tree):
-    """
-    arguments:
-      tree is an xml.etree.ElementTree object
-    returns:
-      a dictionary mapping 'num_system_calls' to the number of system_calls
-      made by an executable (summed over all processes)
-    """
-    c = Counter()
-    in_all_section = False
-    for el in tree.iter():
-        # ignore everything outside the "all_section" element
-        if el.tag == "all_section" and not in_all_section:
-            in_all_section = True
-        elif el.tag == "all_section" and in_all_section:
-            in_all_section = False
-        elif in_all_section and el.tag=="vm_allocate":
-            c['vm_allocate'] += 1
-    return c
-
-def vm_protect(tree):
-    """
-    arguments:
-      tree is an xml.etree.ElementTree object
-    returns:
-      a dictionary mapping 'num_system_calls' to the number of system_calls
-      made by an executable (summed over all processes)
-    """
-    c = Counter()
-    in_all_section = False
-    for el in tree.iter():
-        # ignore everything outside the "all_section" element
-        if el.tag == "all_section" and not in_all_section:
-            in_all_section = True
-        elif el.tag == "all_section" and in_all_section:
-            in_all_section = False
-        elif in_all_section and el.tag=="vm_protect":
-            c['vm_protect'] += 1
-    return c
-
-def kill_process(tree):
-    """
-    arguments:
-      tree is an xml.etree.ElementTree object
-    returns:
-      a dictionary mapping 'num_system_calls' to the number of system_calls
-      made by an executable (summed over all processes)
-    """
-    c = Counter()
-    in_all_section = False
-    for el in tree.iter():
-        # ignore everything outside the "all_section" element
-        if el.tag == "all_section" and not in_all_section:
-            in_all_section = True
-        elif el.tag == "all_section" and in_all_section:
-            in_all_section = False
-        elif in_all_section and el.tag=="kill_process":
-            c['kill_process'] += 1
-    return c
-
-def load_dll(tree):
-    """
-    arguments:
-      tree is an xml.etree.ElementTree object
-    returns:
-      a dictionary mapping 'num_system_calls' to the number of system_calls
-      made by an executable (summed over all processes)
-    """
-    c = Counter()
-    in_all_section = False
-    for el in tree.iter():
-        # ignore everything outside the "all_section" element
-        if el.tag == "all_section" and not in_all_section:
-            in_all_section = True
-        elif el.tag == "all_section" and in_all_section:
-            in_all_section = False
-        elif in_all_section and el.tag=="load_dll":
-            c['load_dll'] += 1
-    return c
-
-def create_mutex(tree):
-    """
-    arguments:
-      tree is an xml.etree.ElementTree object
-    returns:
-      a dictionary mapping 'num_system_calls' to the number of system_calls
-      made by an executable (summed over all processes)
-    """
-    c = Counter()
-    in_all_section = False
-    for el in tree.iter():
-        # ignore everything outside the "all_section" element
-        if el.tag == "all_section" and not in_all_section:
-            in_all_section = True
-        elif el.tag == "all_section" and in_all_section:
-            in_all_section = False
-        elif in_all_section and el.tag=="create_mutex":
-            c['create_mutex'] += 1
-    return c
-
-def set_windows_hook(tree):
-    """
-    arguments:
-      tree is an xml.etree.ElementTree object
-    returns:
-      a dictionary mapping 'num_system_calls' to the number of system_calls
-      made by an executable (summed over all processes)
-    """
-    c = Counter()
-    in_all_section = False
-    for el in tree.iter():
-        # ignore everything outside the "all_section" element
-        if el.tag == "all_section" and not in_all_section:
-            in_all_section = True
-        elif el.tag == "all_section" and in_all_section:
-            in_all_section = False
-        elif in_all_section and el.tag=="set_windows_hook":
-            c['set_windows_hook'] += 1
-    return c
-
-def check_for_debugger(tree):
-    """
-    arguments:
-      tree is an xml.etree.ElementTree object
-    returns:
-      a dictionary mapping 'num_system_calls' to the number of system_calls
-      made by an executable (summed over all processes)
-    """
-    c = Counter()
-    in_all_section = False
-    for el in tree.iter():
-        # ignore everything outside the "all_section" element
-        if el.tag == "all_section" and not in_all_section:
-            in_all_section = True
-        elif el.tag == "all_section" and in_all_section:
-            in_all_section = False
-        elif in_all_section and el.tag=="check_for_debugger":
-            c['check_for_debugger'] += 1
-    return c
-
-def create_window(tree):
-    """
-    arguments:
-      tree is an xml.etree.ElementTree object
-    returns:
-      a dictionary mapping 'num_system_calls' to the number of system_calls
-      made by an executable (summed over all processes)
-    """
-    c = Counter()
-    in_all_section = False
-    for el in tree.iter():
-        # ignore everything outside the "all_section" element
-        if el.tag == "all_section" and not in_all_section:
-            in_all_section = True
-        elif el.tag == "all_section" and in_all_section:
-            in_all_section = False
-        elif in_all_section and el.tag=="create_window":
-            c['create_window'] += 1
-    return c
 
 ## The following function does the feature extraction, learning, and prediction
 def main():
@@ -475,7 +420,7 @@ def main():
     outputfile = "mypredictions.csv"  # feel free to change this or take it as an argument
     
     # TODO put the names of the feature functions you've defined above in this list
-    ffs = [first_last_system_call_feats, system_call_count_feats]
+    ffs = [first_last_system_call_feats, level_4]
     
     # extract features
     print "extracting training features..."
