@@ -13,15 +13,15 @@ print 'imported ids'
 mbz.set_useragent('CS 181 fetcher', '1', 'nwolfe@college.harvard.edu')
 mbz.set_rate_limit()
 
-(df['Person'] =
- df['Group'] =
- df['Male'] =
- df['Female'] =
- df['years old'] =
- df['number of releases'] =
- df['years since first release'] =
- df['years since last release'] =
- df['years since average release'] = np.zeros(len(df), dtype=int))
+df['Person'] = \
+    df['Group'] = \
+    df['Male'] = \
+    df['Female'] = \
+    df['years old'] = \
+    df['number of releases'] = \
+    df['years since first release'] = \
+    df['years since last release'] = \
+    df['years since average release'] = np.zeros(len(df), dtype=int)
 
 df['releases album percentage'] = np.ones(len(df), dtype=float)
 df['releases live percentage'] = np.zeros(len(df), dtype=float)
