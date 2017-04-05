@@ -28,7 +28,7 @@ for user, user_data in train_data.iteritems():
     for artist, plays in user_data.iteritems():
         plays_array.append(plays)
 global_median = np.median(np.array(plays_array))
-print "global median:", global_median
+print ("global median:", global_median)
 
 # Write out test solutions.
 with open(test_file, 'r') as test_fh:
