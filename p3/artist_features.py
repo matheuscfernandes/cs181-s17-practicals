@@ -23,15 +23,18 @@ df['Person'] = \
     df['years since last release'] = \
     df['years since average release'] = np.zeros(len(df), dtype=int)
 
+df['years since average release'] = \
+    df['releases live percentage'] = np.zeros(len(df), dtype=float)
 df['releases album percentage'] = np.ones(len(df), dtype=float)
-df['releases live percentage'] = np.zeros(len(df), dtype=float)
 
 current_year = datetime.date.today().year
 
 for (idx, mbz_id) in enumerate(df['id']):
     try:
-        data = mbz.get_artist_by_id(mbz_id,
-                                    includes=['release-groups'])['artist']
+        data = mbz.get_artist_by_id(
+            mbz_id,
+            includes=['release-groups', 'tags']
+        )['artist']
     except:
         continue
     
@@ -90,11 +93,26 @@ for (idx, mbz_id) in enumerate(df['id']):
 
     if 'country' in data:
         country = data['country']
-        if country not in df:
+        if 'country ' + country not in df:
             df['country ' + country] = np.zeros(len(df), dtype=int)
         df.loc[idx, 'country ' + country] = 1
+
+    if 'tag-list' in data:
+        for tag in data['tag-list']:
+            if int(tag['count']) > 0:
+                if tag['name'] not in df:
+                    df[tag['name']] = np.zeros(len(df), dtype=int)
+                df.loc[idx, tag['name']] = 1
 
     if (idx + 1) % 50 == 0:
         print idx + 1
 
+for (idx, label) in enumerate(df.columns):
+    if df[label].sum() <= 1:
+        df = df.drop(label, axis=1)
+        continue
+    try:
+        df = df.rename(columns={label: str(label)})
+    except UnicodeEncodeError:
+        df = df.rename(columns={label: idx})
 df.to_csv('artist features.csv')
