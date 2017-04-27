@@ -9,7 +9,7 @@ class SwingyMonkey:
                  reward_callback=None, tick_length=100):
         """Constructor for the SwingyMonkey class.
 
-        Possible Keyword Arguments:
+        Possible Keyword Arguments: 
 
         sound: Boolean variable on whether or not to play sounds.
                Defaults to True.
