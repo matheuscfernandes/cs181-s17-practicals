@@ -19,7 +19,7 @@ class Learner(object):
         self.Eta=Eta
         self.screen_width=600
         self.screen_height=400
-        self.Q=np.zeros((2,self.velocity_segments+1,int(self.screen_width/self.Space_Discretization)+1,int(self.screen_height/self.Space_Discretization)+1))
+        self.Q=np.zeros((2,self.velocity_segments+1,int(self.screen_width/self.Space_Discretization)+1,int(self.screen_height/self.Space_Discretization)+1),2)
 
     def reset(self):
         self.last_state  = None
@@ -27,65 +27,61 @@ class Learner(object):
         self.last_reward = None
         self.gravity = None
 
+
+    def __random_act(): #Generating random action for exploration
+        return npr.choice([0,1])
+    
+    def __MeasureGravity(self,state,last_state): #MEASURING GRAVITY
+        return abs(state['monkey']['vel']-last_state['monkey']['vel'])
+    
+    def __VelocityNorm(self,v): #NORMALIZING VELOCITY INTO DIFFERENT INDECES FOR CALLING Q FUNCTION
+        Segs=self.velocity_segments
+        Max_V=self.max_V
+        V_norm=int((float(v)/float(Max_V)+1.)*Segs/2.)
+        if V_norm>Segs: V_norm=Segs
+        if V_norm<0: V_norm=0
+        return V_norm
+
     def action_callback(self, state):
         '''
         Implement this function to learn things and take actions.
         Return 0 if you don't want to jump and 1 if you do.
         '''
-
+        #INITIALIZING FREQUENTLY USED VARIABLES
         self.state=state
         Space_Discretization=self.Space_Discretization
-
-
-        def random_act(): #Generating random action for exploration
-        	return npr.choice([0,1])
-        def MeasureGravity(self,state,last_state):
-            return abs(state['monkey']['vel']-last_state['monkey']['vel'])
-        def VelocityNorm(self,v):
-            Segs=self.velocity_segments
-            Max_V=self.max_V
-            V_norm=int((float(v)/float(Max_V)+1.)*Segs/2.)
-            if V_norm>Segs: V_norm=Segs
-            if V_norm<0: V_norm=0
-            return V_norm
 
         ### ---- Obtaining Current State Parameters ---- ####
         Dist=int(state['tree']['dist']/Space_Discretization)
         Height=int((state['monkey']['bot']-state['tree']['bot'])/Space_Discretization)
-        Vel=VelocityNorm(state['monkey']['vel'])
+        Vel=self.__VelocityNorm(state['monkey']['vel'])
 
         if self.last_action==None: new_action=0
         else:
-
                 last_state=self.last_state
 
                 ### ---- Obtaining Previous State Parameters ---- ####
                 LastDist=int(last_state['tree']['dist']/Space_Discretization)
                 LastHeight=int((last_state['monkey']['bot']-last_state['tree']['bot'])/Space_Discretization)
-                LastVel=VelocityNorm(last_state['monkey']['vel'])
+                LastVel=self.__VelocityNorm(last_state['monkey']['vel'])
 
+                #IMPLEMENTATION OF GRAVITY
                 if self.gravity==None:
-                    Grav=MeasureGravity(state,last_state)
-                    if Grav<0: self.gravity=int(abs(Grav))
-
-                if npr.rand()<self.eta: new_action=random_act()
-                
-                else:    
-
-                new_action=
-
-                self.Q[self.last_action]
+                    Grav=self.__MeasureGravity(state,last_state)
+                    if Grav==-1: self.gravity=0
+                    elif Grav==-4: self.gravity=1
 
 
-        
-        	
+                #EPSILONG GREEDY IMPLEMENTATION    
+                if npr.rand()<self.Eps: new_action=random_act()
+                else: new_action=np.argmax(self.Q[:,Vel,Dist,Height,self.gravity])
+
+                #Q-UPDATE
+                Q_Max=np.max(self.Q[:,Vel,Dist,Height,self.gravity])
+                self.Q[self.last_action,Vel,Dist,Height,self.gravity] -= self.eta*(self.Q[self.last_action,Vel,Dist,Height,self.gravity]-(self.last_reward+self.Gamma*Q_Max))  
 
         self.last_action = new_action
         self.last_state  = self.state
-
-        print state
-        print new_action
-
 
         return self.last_action
 
