@@ -29,19 +29,34 @@ class Learner(object):
         Return 0 if you don't want to jump and 1 if you do.
         '''
         def random_act(): #Generating random action for exploration
-        	return npr.randint(0,2)
+        	return npr.choice([0,1])
+
+        #TREE PARAMETERS
+        TreeDist=state['tree']['dist']/self.Space_Discretization
+        TreeTopDist=state['tree']['top']
+        TreeBotDist=state['tree']['bot']
+        TreeDist=state['tree']['dist']
+
+        #MONKEY PARAMETERS
+        MonkV=state['monkey']['vel']
+        MonkHeight=['monkey']['bot']
+
+
+
 
         if npr.rand()<self.eta: 
-
         	new_action=random_act()
+        	
         else:
+            #initialize the parameters
+
 
 
         if self.last_action==None:
 
 
 
-       	# else:
+       	else:
 
 
         new_state  = state
