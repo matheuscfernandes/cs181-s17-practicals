@@ -19,8 +19,7 @@ class Learner(object):
         self.Eta=Eta
         self.screen_width=600
         self.screen_height=400
-        self.Q=np.zeros((2,self.velocity_segments+1,int(self.screen_width/self.Space_Discretization)+1,
-                        int(self.screen_height/self.Space_Discretization)+1),2)
+        self.Q=np.zeros((2,self.velocity_segments+1,int(self.screen_width/self.Space_Discretization)+1,int(self.screen_height/self.Space_Discretization)+1,2))
 
     def reset(self):
         self.last_state  = None
@@ -29,11 +28,11 @@ class Learner(object):
         self.gravity = None
 
 
-    def __random_act(): #Generating random action for exploration
+    def __random_act(self): #Generating random action for exploration
         return npr.choice([0,1])
     
     def __MeasureGravity(self,state,last_state): #MEASURING GRAVITY
-        return abs(state['monkey']['vel']-last_state['monkey']['vel'])
+        return (state['monkey']['vel']-last_state['monkey']['vel'])
     
     def __VelocityNorm(self,v): #NORMALIZING VELOCITY INTO DIFFERENT INDECES FOR CALLING Q FUNCTION
         Segs=self.velocity_segments
@@ -74,18 +73,17 @@ class Learner(object):
 
 
                 #EPSILONG GREEDY IMPLEMENTATION    
-                if npr.rand()<self.Eps: new_action=random_act()
+                if npr.rand()<self.Eps: new_action=self.__random_act()
                 else: new_action=np.argmax(self.Q[:,Vel,Dist,Height,self.gravity])
-
+  
                 #Q-UPDATE
                 Q_Max=np.max(self.Q[:,Vel,Dist,Height,self.gravity])
-                self.Q[self.last_action,Vel,Dist,Height,self.gravity] -= 
-                        self.eta*(self.Q[self.last_action,Vel,Dist,Height,self.gravity]-(self.last_reward+self.Gamma*Q_Max))  
+                self.Q[self.last_action,LastVel,LastDist,LastHeight,self.gravity]-=self.Eta*(self.Q[self.last_action,LastVel,LastDist,LastHeight,self.gravity]-(self.last_reward+self.Gamma*Q_Max))  
 
         self.last_action = new_action
         self.last_state  = self.state
 
-        return self.last_action
+        return new_action
 
     def reward_callback(self, reward):
         '''This gets called so you can see what reward you get.'''
@@ -124,7 +122,7 @@ if __name__ == '__main__':
 	Space_Discretization=100 # space direscretization in terms of pixels
 	Eps=0.01
 	Gamma=0.9
-	Eta=
+	Eta=0.8
 
 	# Select agent.
 	agent = Learner(Space_Discretization,Eps,Gamma,Eta)
@@ -133,7 +131,7 @@ if __name__ == '__main__':
 	hist = []
 
 	# Run games. 
-	run_games(agent, hist, 20, 1000)
+	run_games(agent, hist, 1000, 10)
 
 	# Save history. 
 	np.save('hist',np.array(hist))
