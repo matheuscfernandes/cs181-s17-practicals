@@ -9,19 +9,22 @@ class Learner(object):
     This agent jumps randomly.
     '''
 
-    def __init__(self,Space_Discretization,Eps,Gamma,Eta):
-        self.reset() #RESETING CERTAIN VARIABLES THAT ARE NOT INCLUDED IN THIS LIST
+    def __init__(self,Space_Discretization,Eps,Gamma,Eta,ii):
+        self.reset(ii) #RESETING CERTAIN VARIABLES THAT ARE NOT INCLUDED IN THIS LIST
         self.Space_Discretization=Space_Discretization
-        self.velocity_segments=10
+        self.velocity_segments=5
         self.max_V=40
         self.Eps=Eps
         self.Gamma=Gamma
         self.Eta=Eta
         self.screen_width=600
         self.screen_height=400
-        self.Q=np.zeros((2,self.velocity_segments+1,int(self.screen_width/self.Space_Discretization)+1,int(self.screen_height/self.Space_Discretization)+1,2))
+        self.Q=np.zeros((2,self.velocity_segments+1,
+            int(self.screen_width/self.Space_Discretization)+1,
+            int(self.screen_height*1.5/self.Space_Discretization)+1,2))
 
-    def reset(self):
+    def reset(self,ii):
+        self.epoch=ii
         self.last_state  = None
         self.last_action = None
         self.last_reward = None
@@ -53,7 +56,9 @@ class Learner(object):
 
         ### ---- Obtaining Current State Parameters ---- ####
         Dist=int(state['tree']['dist']/Space_Discretization)
-        Height=int((state['monkey']['bot']-state['tree']['bot'])/Space_Discretization)
+        if Dist<0:Dist = 0
+        Height=int((state['monkey']['bot']-state['tree']['bot']+0.5*self.screen_height)/Space_Discretization)
+        if Height<0:print ("heigt<0")
         Vel=self.__VelocityNorm(state['monkey']['vel'])
 
         if self.last_action==None: new_action=0
@@ -62,7 +67,9 @@ class Learner(object):
 
                 ### ---- Obtaining Previous State Parameters ---- ####
                 LastDist=int(last_state['tree']['dist']/Space_Discretization)
-                LastHeight=int((last_state['monkey']['bot']-last_state['tree']['bot'])/Space_Discretization)
+                if Dist<0:Dist = 0
+                LastHeight=int((last_state['monkey']['bot']-last_state['tree']['bot']+0.5*self.screen_height)/Space_Discretization)
+                # if LastHeight<0:LastHeight = 0
                 LastVel=self.__VelocityNorm(last_state['monkey']['vel'])
 
                 #IMPLEMENTATION OF GRAVITY
@@ -81,12 +88,13 @@ class Learner(object):
                 self.Q[self.last_action,LastVel,LastDist,LastHeight,self.gravity]-=self.Eta*(self.Q[self.last_action,LastVel,LastDist,LastHeight,self.gravity]-(self.last_reward+self.Gamma*Q_Max))  
 
         self.last_action = new_action
-        self.last_state  = self.state
+        self.last_state = self.state
 
         return new_action
 
     def reward_callback(self, reward):
         '''This gets called so you can see what reward you get.'''
+        # if reward==-10: print (self.epoch)
         self.last_reward = reward
 
 
@@ -111,29 +119,27 @@ def run_games(learner, hist, iters = 100, t_len = 100):
         hist.append(swing.score)
 
         # Reset the state of the learner.
-        learner.reset()
+        learner.reset(ii)
         
     return
 
 
 if __name__ == '__main__':
 
-	#Parameters
-	Space_Discretization=100 # space direscretization in terms of pixels
-	Eps=0.01
-	Gamma=0.9
-	Eta=0.8
+    #Parameters
+    Space_Discretization=50 # space direscretization in terms of pixels
+    Eps=0.01
+    Gamma=0.8
+    Eta=0.2
 
-	# Select agent.
-	agent = Learner(Space_Discretization,Eps,Gamma,Eta)
+    # Select agent.
+    agent = Learner(Space_Discretization,Eps,Gamma,Eta,0)
 
-	# Empty list to save history.
-	hist = []
+    # Empty list to save history.
+    hist = []
 
-	# Run games. 
-	run_games(agent, hist, 1000, 10)
+    # Run games. 
+    run_games(agent, hist, 1000, 1)
 
-	# Save history. 
-	np.save('hist',np.array(hist))
-
-
+    # Save history. 
+    np.save('hist',np.array(hist))
