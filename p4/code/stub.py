@@ -10,7 +10,7 @@ class Learner(object):
     '''
 
     def __init__(self,Space_Discretization,Eps,Gamma,Eta):
-        self.reset()
+        self.reset() #RESETING CERTAIN VARIABLES THAT ARE NOT INCLUDED IN THIS LIST
         self.Space_Discretization=Space_Discretization
         self.velocity_segments=10
         self.max_V=40
@@ -19,7 +19,8 @@ class Learner(object):
         self.Eta=Eta
         self.screen_width=600
         self.screen_height=400
-        self.Q=np.zeros((2,self.velocity_segments+1,int(self.screen_width/self.Space_Discretization)+1,int(self.screen_height/self.Space_Discretization)+1),2)
+        self.Q=np.zeros((2,self.velocity_segments+1,int(self.screen_width/self.Space_Discretization)+1,
+                        int(self.screen_height/self.Space_Discretization)+1),2)
 
     def reset(self):
         self.last_state  = None
@@ -78,7 +79,8 @@ class Learner(object):
 
                 #Q-UPDATE
                 Q_Max=np.max(self.Q[:,Vel,Dist,Height,self.gravity])
-                self.Q[self.last_action,Vel,Dist,Height,self.gravity] -= self.eta*(self.Q[self.last_action,Vel,Dist,Height,self.gravity]-(self.last_reward+self.Gamma*Q_Max))  
+                self.Q[self.last_action,Vel,Dist,Height,self.gravity] -= 
+                        self.eta*(self.Q[self.last_action,Vel,Dist,Height,self.gravity]-(self.last_reward+self.Gamma*Q_Max))  
 
         self.last_action = new_action
         self.last_state  = self.state
