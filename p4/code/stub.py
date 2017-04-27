@@ -22,6 +22,7 @@ class Learner(object):
         self.last_state  = None
         self.last_action = None
         self.last_reward = None
+        self.gravity = None
 
     def action_callback(self, state):
         '''
@@ -30,7 +31,13 @@ class Learner(object):
         '''
         def random_act(): #Generating random action for exploration
         	return npr.choice([0,1])
+        def MeasureGravity(self):
+            abs(self.state['monkey']['vel']-self.last_state['monkey']['vel'])
+            
 
+
+
+        ### ---- Obtaining Current State Parameters ---- ####
         #TREE PARAMETERS
         TreeDist=state['tree']['dist']/self.Space_Discretization
         TreeTopDist=state['tree']['top']
@@ -39,7 +46,29 @@ class Learner(object):
 
         #MONKEY PARAMETERS
         MonkV=state['monkey']['vel']
-        MonkHeight=['monkey']['bot']
+        MonkHeight=state['monkey']['bot']
+
+        if self.last_action!=None:
+            ### ---- Obtaining Previous State Parameters ---- ####
+            LastTreeDist=last_state['tree']['dist']/self.Space_Discretization
+            LastTreeTopDist=last_state['tree']['top']
+            LastTreeBotDist=last_state['tree']['bot']
+            LastTreeDist=last_state['tree']['dist']
+
+            #MONKEY PARAMETERS
+            LastMonkV=last_state['monkey']['vel']
+            LastMonkHeight=last_state['monkey']['bot']
+
+            if self.gravity==None:
+                Grav=MeasureGravity()
+                if Grav<0: self.gravity=abs(Grav)
+            
+
+
+
+        else: new_action=random_act()
+
+
 
 
 
@@ -52,7 +81,7 @@ class Learner(object):
 
 
 
-        if self.last_action==None:
+        
 
 
 
