@@ -102,7 +102,7 @@ def run_games(learner, hist, iters = 100, t_len = 100):
     '''
     Driver function to simulate learning by having the agent play a sequence of games.
     '''
-    
+    best_score=0.
     for ii in range(iters):
         # Make a new monkey object.
         swing = SwingyMonkey(sound=False,                  # Don't play sounds.
@@ -117,6 +117,9 @@ def run_games(learner, hist, iters = 100, t_len = 100):
         
         # Save score history.
         hist.append(swing.score)
+        if max(hist)>best_score: 
+        	best_score=max(hist)
+        	print 'In Epoch {} the max score was beat to {}'.format(ii,max(hist))
 
         # Reset the state of the learner.
         learner.reset(ii)
@@ -128,9 +131,17 @@ if __name__ == '__main__':
 
     #Parameters
     Space_Discretization=50 # space direscretization in terms of pixels
-    Eps=0.01
+    Eps=0.00001
     Gamma=0.8
     Eta=0.2
+
+    #PRINTING PARAMETERS
+    print '----Parameters-----'
+    print 'Space_Discretization',Space_Discretization
+    print 'Eps',Eps
+    print 'Gamma',Gamma
+    print 'Eta',Eta
+    print '----Score Progress----'
 
     # Select agent.
     agent = Learner(Space_Discretization,Eps,Gamma,Eta,0)
