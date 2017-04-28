@@ -136,6 +136,7 @@ if __name__ == '__main__':
     Eta=0.2
 
     #PRINTING PARAMETERS
+    print 'Running Without EPS and ETA Correction'	
     print '----Parameters-----'
     print 'Space_Discretization',Space_Discretization
     print 'Eps',Eps
