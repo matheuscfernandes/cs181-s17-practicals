@@ -131,8 +131,8 @@ if __name__ == '__main__':
 
     #Parameters
     Space_Discretization=50 # space direscretization in terms of pixels
-    Eps=0.00001
-    Gamma=0.8
+    Eps=0.01
+    Gamma=0.9
     Eta=0.2
 
     #PRINTING PARAMETERS
@@ -151,7 +151,8 @@ if __name__ == '__main__':
     hist = []
 
     # Run games. 
-    run_games(agent, hist, 1000, 1)
+    run_games(agent, hist, 300, 1)
+    filename = 'hist1_eps'+str(10000*Eps)+'_ga'+ str(10000*Gamma)+'_eta'+str(10000*Eta)
 
     # Save history. 
-    np.save('hist',np.array(hist))
+    np.save(filename,np.array(hist))
