@@ -146,10 +146,13 @@ def run_games(learner, hist, iters = 100, t_len = 100):
 if __name__ == '__main__':
 
 	#Parameters
-	Space_Discretization=50 # space direscretization in terms of pixels
-	Eps_0=0.01
-	Gamma=0.8
-	Eta_0=0.2
+    Space_Discretization=50 # space direscretization in terms of pixels
+    Eps_0=0.01
+    Gamma=0.9
+    Eta_0=0.2
+    listeps = [0.001,0.005,0.01,0.05,0.1]
+    listga = [0.8,0.95]
+    listeta = [0.1,0.5]
     # print ('Running With EPS and ETA Correction')
     # print ('----Parameters-----')
     # print ('Space_Discretization',Space_Discretization)
@@ -158,15 +161,46 @@ if __name__ == '__main__':
     # print ('Eta',Eta_0)
     # print ('----Score Progress----')
 	# Select agent.
-	agent = Learner(Space_Discretization,Eps_0,Gamma,Eta_0,0)
+    for Eps_0 in listeps:
+        agent = Learner(Space_Discretization,Eps_0,Gamma,Eta_0,0)
 
-	# Empty list to save history.
-	hist = []
+            	# Empty list to save history.
+        hist = []
 
-	# Run games. 
-	run_games(agent, hist, 1000, 1)
+            	# Run games. 
+        run_games(agent, hist, 300, 1)
 
-	# Save history. 
-	np.save('hist',np.array(hist))
+            	# Save history.
+        filename = 'hist2_eps'+str(10000*Eps_0)+'_ga'+ str(10000*Gamma)+'_eta'+str(10000*Eta_0)
+        np.save(filename,np.array(hist))
+    Eps_0=0.01
+    Gamma=0.9
+    Eta_0=0.2
+    for Gamma in listga:
+        agent = Learner(Space_Discretization,Eps_0,Gamma,Eta_0,0)
 
+                # Empty list to save history.
+        hist = []
+
+                # Run games. 
+        run_games(agent, hist, 300, 1)
+
+                # Save history.
+        filename = 'hist2_eps'+str(10000*Eps_0)+'_ga'+ str(10000*Gamma)+'_eta'+str(10000*Eta_0)
+        np.save(filename,np.array(hist))
+    Eps_0=0.01
+    Gamma=0.9
+    Eta_0=0.2
+    for Eta_0 in listeta:
+        agent = Learner(Space_Discretization,Eps_0,Gamma,Eta_0,0)
+
+                # Empty list to save history.
+        hist = []
+
+                # Run games. 
+        run_games(agent, hist, 300, 1)
+
+                # Save history.
+        filename = 'hist2_eps'+str(10000*Eps_0)+'_ga'+ str(10000*Gamma)+'_eta'+str(10000*Eta_0)
+        np.save(filename,np.array(hist))
 
