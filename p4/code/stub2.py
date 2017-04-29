@@ -204,3 +204,6 @@ if __name__ == '__main__':
         filename = 'hist2_eps'+str(10000*Eps_0)+'_ga'+ str(10000*Gamma)+'_eta'+str(10000*Eta_0)
         np.save(filename,np.array(hist))
 
+python plotter.py 50 hist1_eps0.001_ga0.9_eta0.2 hist1_eps0.005_ga0.9_eta0.2 hist1_eps0.01_ga0.9_eta0.2 hist1_eps0.05_ga0.9_eta0.2 hist1_eps0.1_ga0.9_eta0.2
+python plotter.py 50 hist1_eps0.01_ga0.8_eta0.2 hist1_eps0.01_ga0.9_eta0.2 hist1_eps0.01_ga0.95_eta0.2
+python plotter.py 50 hist1_eps0.01_ga0.9_eta0.1 hist1_eps0.01_ga0.9_eta0.1

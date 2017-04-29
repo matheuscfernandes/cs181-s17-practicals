@@ -3,6 +3,7 @@ from sys import argv
 from numpy import load
 from pandas import Series
 import matplotlib.pyplot as plt
+import pylab
 
 def main():
     if len(argv) < 3:
@@ -26,15 +27,16 @@ def main():
         try:
             hist = load(fn)
         except IOError:
-            print '%s not a valid NumPy file.' % fn
+            print ('%s not a valid NumPy file.' % fn)
             return
 
         ax.plot(Series(hist).rolling(min_periods=0, window=k).mean())
         
     ax.legend(argv[2:])
     plt.show()
+    # plt.savefig("hist2_eps.png")
 
 def printUsage():
-    print 'Usage: python plotter.py <smoothing factor> <hist1> <hist2> ...'
+    print ('Usage: python plotter.py <smoothing factor> <hist1> <hist2> ...')
 
 main()
